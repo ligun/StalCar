@@ -20,17 +20,12 @@ void setup(){
 }
 
 void loop(){
-  char buf[64];
-  read(buf,64);
-  Serial.println(buf);
-  parse(buf);
-  /*
   if(digitalRead(8)){
     mode1();
     Serial.println("mode1");
   }
-  else mode2();
-  */
+  //else mode2();
+  else mode3();
 }
 
 void mode1(){
@@ -59,6 +54,13 @@ void mode2(){
     right.brake();
   }
   Serial.println(distance);
+}
+
+void mode3(){
+  char buf[64];
+  read(buf,64);
+  Serial.println(buf);
+  parse(buf);
 }
 
 int read(char *buf,int size){

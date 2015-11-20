@@ -9,6 +9,7 @@
 #include <sstream>
 #include <iomanip>
 
+#include "RaspiCamCV.h"
 #include "SerialManager.h"
 
 #define CASCADE_FILE "./haarcascade_frontalface_alt.xml"
@@ -28,7 +29,7 @@
 #define RIGHT 1
 
 /* 表示モード */
-#define WINDOW_MODE
+//#define WINDOW_MODE
 
 int detect(IplImage*,IplImage*,int,int,int,CvPoint*);
 void sendCommand(int,std::string,int);
@@ -42,11 +43,11 @@ static int left_speed = 0,right_speed = 0;
 /* メイン */
 int main(int argc,char **argv){
   IplImage *image = NULL,*dst = NULL;
-  CvCapture *cap = NULL;
+  RaspiCamCvCapture *cap = NULL;
   CvPoint point;
  
 	
-  if((cap = cvCreateCameraCapture(0)) == 0){
+  if((cap = raspiCamCvCreateCameraCapture(0)) == 0){
     printf("no camera\n");
     return -1;
   }
@@ -66,8 +67,8 @@ int main(int argc,char **argv){
   
   storage=cvCreateMemStorage(0);
   
-  cvSetCaptureProperty(cap,CV_CAP_PROP_FRAME_WIDTH,WIDTH);
-  cvSetCaptureProperty(cap,CV_CAP_PROP_FRAME_HEIGHT,HEIGHT);
+  raspiCamCvSetCaptureProperty(cap,CV_CAP_PROP_FRAME_WIDTH,WIDTH);
+  raspiCamCvSetCaptureProperty(cap,CV_CAP_PROP_FRAME_HEIGHT,HEIGHT);
   
   /* ウィンドウの作成 */
 #ifdef WINDOW_MODE
@@ -82,14 +83,14 @@ int main(int argc,char **argv){
   /* メインループ */
   while(1){
     /* 画像の表示 */
-    image = cvQueryFrame(cap);
+    image = raspiCamCvQueryFrame(cap);
     if(image == NULL)continue;
-    printf("cap\n");
+    //printf("cap\n");
     dst = cvCloneImage(image);
     int size = detect(image,dst,DOWNSCALE,48,48,&point);
     //int size =0;
 
-    printf("show\n");
+    //printf("show\n");
 #ifdef WINDOW_MODE
     cvShowImage("sample", dst);
 #endif
@@ -109,24 +110,24 @@ int main(int argc,char **argv){
       	*/
       	sendCommand(LEFT,"stop",0);
       	sendCommand(RIGHT,"forward",80);
-	usleep(100000);
+	usleep(10000);
       }else if(point.x > image->width/2 + THRESHOLD){
-      	sendCommand(LEFT,"forward",130);
+      	sendCommand(LEFT,"forward",80);
       	sendCommand(RIGHT,"stop",0);
-	usleep(100000);
-      }else if(size>WIDTH*0.8){
+	usleep(10000);
+      }else if(size>WIDTH*0.6){
       	sendCommand(LEFT,"stop",0);
       	sendCommand(RIGHT,"stop",0);
-	usleep(100000);
+	usleep(10000);
       }else{
-      	sendCommand(LEFT,"forward",180);
-      	sendCommand(RIGHT,"forward",250);
-	usleep(100000);
+      	sendCommand(LEFT,"forward",150);
+      	sendCommand(RIGHT,"forward",150);
+	usleep(10000);
       }
     }else{
       	sendCommand(LEFT,"stop",0);
       	sendCommand(RIGHT,"stop",0);
-      usleep(100000);
+      usleep(10000);
     }
     cvReleaseImage(&dst);
     if(cvWaitKey(10) == 'q')break;
@@ -135,7 +136,7 @@ int main(int argc,char **argv){
   cvDestroyWindow("sample");
 #endif
 
-  cvReleaseCapture(&cap);
+  raspiCamCvReleaseCapture(&cap);
   
   return 0;
 }

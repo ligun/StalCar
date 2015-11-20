@@ -6,11 +6,13 @@
 
 #define LEFT_MOTOR1 2
 #define LEFT_MOTOR2 3
+#define LEFT_PWM 10
 #define RIGHT_MOTOR1 4
 #define RIGHT_MOTOR2 5
+#define RIGHT_PWM 11
 
 //MotorDriver *left,*right;
-MotorDriver left(LEFT_MOTOR1,LEFT_MOTOR2),right(RIGHT_MOTOR1,RIGHT_MOTOR2);
+MotorDriver left(LEFT_MOTOR1,LEFT_MOTOR2,LEFT_PWM),right(RIGHT_MOTOR1,RIGHT_MOTOR2,RIGHT_PWM);
 
 void setup(){
   pinMode(8,INPUT);

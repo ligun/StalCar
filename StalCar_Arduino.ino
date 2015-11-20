@@ -2,7 +2,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include <MotorDriver.h>
-#include "UltraSonicSensor.h"
 
 #define LEFT_MOTOR1 2
 #define LEFT_MOTOR2 3
@@ -17,7 +16,6 @@ MotorDriver left(LEFT_MOTOR1,LEFT_MOTOR2,LEFT_PWM),right(RIGHT_MOTOR1,RIGHT_MOTO
 void setup(){
   pinMode(8,INPUT);
   
-  setupUltraSonicSensor(14,15);
   Serial.begin(9600);
 }
 
